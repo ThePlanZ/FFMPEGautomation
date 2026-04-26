@@ -17,7 +17,7 @@ do
     D)  destructive=1;;
     h)  printf "Usage \n    h= Display this\n    D= destructive (removes the original file)\n   r= recursive"; exit;;
     r)  recurse=1;;
-    ?)  printf "incorrect usage, use -h for help";;
+    ?)  printf "incorrect usage, use -h for help" && exit;;
     esac
 done
 
@@ -28,11 +28,11 @@ echo "What quality? Input a resolution or use an abreviation such as \"hd720\""
 read res
 
 while true; do
-    if [ $recurse != 1 ]; then
+    if [[ "$recurse" != 1 ]]; then
         break
     else
         recurse=
-        echo "${PURPLE}How many times should it recurse? type i for infinite${NC}"
+        echo -e "${PURPLE}How many times should it recurse? type i for infinite${NC}"
         read recursenum
         if [ $recursenum = "i" ] ; then
             recurse=**/
@@ -69,4 +69,5 @@ for i in $recurse*."$format"; do
         echo -e "${RED}Error${NC}"
     fi;
 done
+
 
