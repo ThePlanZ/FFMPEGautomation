@@ -19,7 +19,7 @@ do
     d)  rmsub=1;;
     r)  recurse=1;;
     h)  printf "Usage \n    h= Display this\n    D= removes the original video once finished\n    d= removes the original subtitle file once finished"; exit;;
-    ?)  printf "incorrect usage, use -h for help";;
+    ?)  printf "incorrect usage, use -h for help" && exit;;
     esac
 done
 
@@ -27,11 +27,11 @@ echo "What format?"
 read format
 
 while true; do
-    if [ $recurse != 1 ]; then
+    if [[ "$recurse" != 1 ]]; then
         break
     else
         recurse=
-        echo "${PURPLE}How many times should it recurse? type i for infinite${NC}"
+        echo -e "${PURPLE}How many times should it recurse? type i for infinite${NC}"
         read recursenum
         if [ $recursenum = "i" ] ; then
             recurse=**/
@@ -69,4 +69,6 @@ for i in $recurse*."$format"; do
         echo -e "${RED}Error${NC}"
     fi;
 done
+
+
 
