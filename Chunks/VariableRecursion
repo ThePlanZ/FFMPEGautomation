@@ -10,7 +10,7 @@ do
 done
 
 while true; do
-    if [ $recurse != 1 ]; then
+    if [[ "$recurse" != 1 ]]; then
         break
     else
         recurse=
