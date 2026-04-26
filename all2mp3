@@ -56,7 +56,7 @@ for i in $recurse*."$format"; do
     echo -e
     echo -e "${CYAN}$i${NC}"
     echo -e
-    if ffmpeg -nostdin -i "$i" -ab 320k -map_metadata 0 -id3v2_version 3 "${i%.*}.mp3"; then
+    if ffmpeg -nostdin -i "$i" -ab 320k -loglevel warning -stats -map_metadata 0 -id3v2_version 3 "${i%.*}.mp3"; then
             echo -e "${GREEN}Success!${NC}"
 	    if [ $destructive -eq 1 ]; then
             rm -f "$i"
