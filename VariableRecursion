@@ -1,0 +1,34 @@
+#!/bin/bash
+
+PURPLE='\033[0;35m'
+
+while getopts r flag
+do
+    case $flag in
+    r)  recurse=1;;
+    esac
+done
+
+while true; do
+    if [ $recurse != 1 ]; then
+        break
+    else
+        recurse=
+        echo "${PURPLE}How many times should it recurse? type i for infinite${NC}"
+        read recursenum
+        if [ $recursenum = "i" ] ; then
+            recurse=**/
+            break
+        elif [[ $recursenum =~ ^[0-9]+$ ]]; then
+            recurse=$(for i in $(seq $recursenum); do
+                        printf '%s' "*/"
+                    done)
+            break
+        fi;
+        echo -e "${RED}ERROR${NC}   Invalid input for recurse"
+    fi;
+done
+
+echo
+echo "$recurse"
+echo

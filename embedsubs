@@ -1,0 +1,72 @@
+#!/bin/bash
+rmsub=0
+rmvid=0
+recurse=
+
+shopt -s globstar
+shopt -s nullglob
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+PURPLE='\033[0;35m'
+NC='\033[0m'
+
+while getopts Ddrh flag
+do
+    case $flag in
+    D)  rmvid=1;;
+    d)  rmsub=1;;
+    r)  recurse=1;;
+    h)  printf "Usage \n    h= Display this\n    D= removes the original video once finished\n    d= removes the original subtitle file once finished"; exit;;
+    ?)  printf "incorrect usage, use -h for help";;
+    esac
+done
+
+echo "What format?"
+read format
+
+while true; do
+    if [ $recurse != 1 ]; then
+        break
+    else
+        recurse=
+        echo "${PURPLE}How many times should it recurse? type i for infinite${NC}"
+        read recursenum
+        if [ $recursenum = "i" ] ; then
+            recurse=**/
+            break
+        elif [[ $recursenum =~ ^[0-9]+$ ]]; then
+            recurse=$(for i in $(seq $recursenum); do
+                        printf '%s' "*/"
+                    done)
+            break
+        fi;
+        echo -e "${RED}ERROR${NC}   Invalid input for recurse"
+    fi;
+done
+
+echo
+echo "$recurse"
+echo
+
+[[ -z "$format" ]] && echo "Empty Format!" && exit 1
+
+for i in $recurse*."$format"; do
+    echo -e
+    echo -e
+    echo -e "${CYAN}$i${NC}"
+    echo -e
+    if ffmpeg -i "$i" -f srt -i "${i%.*}.srt" -loglevel warning -stats -map 0 -map 1 -c:v copy -c:a copy -c:s mov_text "${i%.*}SUB."$format""; then
+            echo -e "${GREEN}Success!${NC}"
+	    if [ $rmvid -eq 1 ]; then
+            rm -f "$i"
+        fi;
+        if [ $rmsub -eq 1 ]; then
+            rm -f "${i%.*}.srt"
+        fi;
+    else
+        echo -e "${RED}Error${NC}"
+    fi;
+done
+

@@ -1,0 +1,87 @@
+#!/bin/bash
+destructive=0
+recurse=0
+
+shopt -s globstar
+shopt -s nullglob
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+PURPLE='\033[0;35m'
+NC='\033[0m'
+
+while getopts Dhr flag
+do
+    case $flag in
+    D)  destructive=1;;
+    h)  printf "Usage \n    h= Display this\n    D= destructive (removes the original file)\n   r= recursive"; exit;;
+    r)  recurse=1;;
+    ?)  printf "incorrect usage, use -h for help";;
+    esac
+done
+
+echo -e From...
+read from
+
+echo -e
+echo -e To...
+read to
+
+while true; do
+    if [ $recurse != 1 ]; then
+        break
+    else
+        recurse=
+        echo "${PURPLE}How many times should it recurse? type i for infinite${NC}"
+        read recursenum
+        if [ $recursenum = "i" ] ; then
+            recurse=**/
+            break
+        elif [[ $recursenum =~ ^[0-9]+$ ]]; then
+            recurse=$(for i in $(seq $recursenum); do
+                        printf '%s' "*/"
+                    done)
+            break
+        fi;
+        echo -e "${RED}ERROR${NC}   Invalid input for recurse"
+    fi;
+done
+
+echo
+echo "$recurse"
+echo
+
+[[ -z "$from" || -z "$to" ]] && echo -e "ERROR - Empty requests" && exit 1
+
+for i in $recurse*."$from"; do
+    echo -e
+    echo -e
+    echo -e "${CYAN}$i${NC}"
+    echo -e
+    if ffmpeg -i "$i" -loglevel warning -stats -codec copy "${i%.*}."$to""; then
+            echo -e "${GREEN}Success!${NC}"
+	    if [ $destructive -eq 1 ]; then
+            rm -f "$i"
+        fi;
+    else
+        echo -e "${RED}Error${NC}"
+    fi;
+done
+
+#Old Code (the archives)
+
+
+
+#for i in **/*."$from";
+#    do ffmpeg -i "$i" -codec copy "${i%.*}."$to"" &&
+#    if [ $destructive -eq 1 ]
+#        then rm "$i"
+#    fi;
+#done
+
+
+
+#for i in **/*."$from";
+#    do ffmpeg -i "$i" -codec copy "${i%.*}."$to"";
+#done
