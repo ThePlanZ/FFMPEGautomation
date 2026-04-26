@@ -1,7 +1,7 @@
 #!/bin/bash
 
 destructive=0
-recurse=0
+recurse=
 
 shopt -s globstar
 shopt -s nullglob
@@ -18,7 +18,7 @@ do
     D)  destructive=1;;
     h)  printf "Usage \n    h= Display this\n    D= destructive (removes the original file)\n   r= recursive"; exit;;
     r)  recurse=1;;
-    ?)  printf "incorrect usage, use -h for help";;
+    ?)  printf "incorrect usage, use -h for help" && exit;;
     esac
 done
 
@@ -26,11 +26,11 @@ echo "What format?"
 read format
 
 while true; do
-    if [ $recurse != 1 ]; then
+    if [[ "$recurse" != 1 ]]; then
         break
     else
         recurse=
-        echo "${PURPLE}How many times should it recurse? type i for infinite${NC}"
+        echo -e "${PURPLE}How many times should it recurse? type i for infinite${NC}"
         read recursenum
         if [ $recursenum = "i" ] ; then
             recurse=**/
