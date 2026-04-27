@@ -16,7 +16,15 @@ do
     case $flag in
     D)  destructive=1;;
     h)  printf "Usage \n    h= Display this\n    D= destructive (removes the original file)\n   r= Recursive logic (variable); exit;;
-    r)  recurse=1;;
+    r)  if [ $OPTARG = "i" ] ; then
+            recurse=**/
+        elif [[ $OPTARG =~ ^[0-9]+$ ]]; then
+            recurse=$(for i in $(seq $OPTARG); do
+                        printf '%s' "*/"
+                    done)
+        else
+        echo -e "${RED}ERROR${NC}   Invalid input for recurse" && echo "Input either a number for recursion level or i for infinite recursion (DANGEROUS!)" && exit 1
+		fi;;
     ?)  printf "incorrect usage, use -h for help"; exit;;
     esac
 done
@@ -26,31 +34,6 @@ read format
 
 echo "What quality? Input a resolution or use an abreviation such as \"hd720\""
 read res
-
-while true; do
-    if [[ "$recurse" != 1 ]]; then
-        break
-    else
-        recurse=
-        echo -e "${PURPLE}How many times should it recurse? type i for infinite${NC}"
-        read recursenum
-        if [ $recursenum = "i" ] ; then
-            recurse=**/
-            break
-        elif [[ $recursenum =~ ^[0-9]+$ ]]; then
-            recurse=$(for i in $(seq $recursenum); do
-                        printf '%s' "*/"
-                    done)
-            break
-        fi;
-        echo -e "${RED}ERROR${NC}   Invalid input for recurse"
-    fi;
-done
-
-echo
-echo "$recurse"
-echo
-
 
 [[ -z "$format" || -z "$res" ]] && echo "Empty Request!" && exit 1
 
