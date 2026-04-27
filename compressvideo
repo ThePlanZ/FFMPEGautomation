@@ -11,7 +11,7 @@ CYAN='\033[0;36m'
 PURPLE='\033[0;35m'
 NC='\033[0m'
 
-while getopts Dhr flag
+while getopts Dhr: flag
 do
     case $flag in
     D)  destructive=1;;
