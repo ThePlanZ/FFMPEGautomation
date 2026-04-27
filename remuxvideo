@@ -16,10 +16,9 @@ do
     case $flag in
     D)  destructive=1;;
     h)  printf "Usage \n    h= Display this\n    D= destructive (removes the original file)\n   r= Recursive logic (variable)"; exit;;
-    r)  recursenum=$OPTARG
-        if [ $recursenum = "i" ] ; then
+    r)  if [ $OPTARG = "i" ] ; then
             recurse=**/
-        elif [[ $recursenum =~ ^[0-9]+$ ]]; then
+        elif [[ $OPTARG =~ ^[0-9]+$ ]]; then
             recurse=$(for i in $(seq $recursenum); do
                         printf '%s' "*/"
                     done)
