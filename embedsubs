@@ -12,12 +12,20 @@ CYAN='\033[0;36m'
 PURPLE='\033[0;35m'
 NC='\033[0m'
 
-while getopts Ddrh flag
+while getopts Ddr:h flag
 do
     case $flag in
     D)  rmvid=1;;
     d)  rmsub=1;;
-    r)  recurse=1;;
+    r)  if [ $OPTARG = "i" ] ; then
+            recurse=**/
+        elif [[ $OPTARG =~ ^[0-9]+$ ]]; then
+            recurse=$(for i in $(seq $OPTARG); do
+                        printf '%s' "*/"
+                    done)
+        else
+        echo -e "${RED}ERROR${NC}   Invalid input for recurse" && echo "Input either a number for recursion level or i for infinite recursion (DANGEROUS!)" && exit 1
+		fi;;
     h)  printf "Usage \n    h= Display this\n    D= removes the original video once finished\n    d= removes the original subtitle file once finished\n   r= Recursive logic (variable)"; exit;;
     ?)  printf "incorrect usage, use -h for help"; exit;;
     esac
@@ -25,30 +33,6 @@ done
 
 echo "What format?"
 read format
-
-while true; do
-    if [[ "$recurse" != 1 ]]; then
-        break
-    else
-        recurse=
-        echo -e "${PURPLE}How many times should it recurse? type i for infinite${NC}"
-        read recursenum
-        if [ $recursenum = "i" ] ; then
-            recurse=**/
-            break
-        elif [[ $recursenum =~ ^[0-9]+$ ]]; then
-            recurse=$(for i in $(seq $recursenum); do
-                        printf '%s' "*/"
-                    done)
-            break
-        fi;
-        echo -e "${RED}ERROR${NC}   Invalid input for recurse"
-    fi;
-done
-
-echo
-echo "$recurse"
-echo
 
 [[ -z "$format" ]] && echo "Empty Format!" && exit 1
 
