@@ -19,7 +19,7 @@ do
     r)  if [ $OPTARG = "i" ] ; then
             recurse=**/
         elif [[ $OPTARG =~ ^[0-9]+$ ]]; then
-            recurse=$(for i in $(seq $recursenum); do
+            recurse=$(for i in $(seq $OPTARG); do
                         printf '%s' "*/"
                     done)
         else
