@@ -12,7 +12,7 @@ CYAN='\033[0;36m'
 PURPLE='\033[0;35m'
 NC='\033[0m'
 
-while getopts Ddr:h flag
+while getopts Ddr:hf: flag
 do
     case $flag in
     D)  rmvid=1;;
@@ -26,9 +26,8 @@ do
         else
         echo -e "${RED}ERROR${NC}   Invalid input for recurse" && echo "Input either a number for recursion level or i for infinite recursion (DANGEROUS!)" && exit 1
 		fi;;
-    h)  printf "Usage \n    h= Display this\n    D= removes the original video once finished\n    d= removes the original subtitle file once finished\n   r= Recursive logic (variable)\n	i= input fomrat\n	o= output format"; exit;;
-	i)  from=$OPTARG;;
-	o)  to=$OPTARG;;
+    h)  printf "Usage \n    h= Display this\n    D= removes the original video once finished\n    d= removes the original subtitle file once finished\n   r= Recursive logic (variable)\n	f= input fomrat"; exit;;
+	f)  format=$OPTARG;;
     ?)  printf "incorrect usage, use -h for help"; exit;;
     esac
 done
