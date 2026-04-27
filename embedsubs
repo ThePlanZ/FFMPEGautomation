@@ -12,7 +12,7 @@ CYAN='\033[0;36m'
 PURPLE='\033[0;35m'
 NC='\033[0m'
 
-while getopts Ddrh flag
+while getopts Ddr:h flag
 do
     case $flag in
     D)  rmvid=1;;
