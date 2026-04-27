@@ -26,7 +26,7 @@ do
         else
         echo -e "${RED}ERROR${NC}   Invalid input for recurse" && echo "Input either a number for recursion level or i for infinite recursion (DANGEROUS!)\n	f= input format" && exit 1
 		fi;;
-	f)  format=$OPTARG
+	f)  format=$OPTARG;;
     ?)  printf "incorrect usage, use -h for help"; exit;;
     esac
 done
