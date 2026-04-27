@@ -26,13 +26,17 @@ do
         else
         echo -e "${RED}ERROR${NC}   Invalid input for recurse" && echo "Input either a number for recursion level or i for infinite recursion (DANGEROUS!)" && exit 1
 		fi;;
-    h)  printf "Usage \n    h= Display this\n    D= removes the original video once finished\n    d= removes the original subtitle file once finished\n   r= Recursive logic (variable)"; exit;;
+    h)  printf "Usage \n    h= Display this\n    D= removes the original video once finished\n    d= removes the original subtitle file once finished\n   r= Recursive logic (variable)\n	i= input fomrat\n	o= output format"; exit;;
+	i)  from=$OPTARG;;
+	o)  to=$OPTARG;;
     ?)  printf "incorrect usage, use -h for help"; exit;;
     esac
 done
 
-echo "What format?"
-read format
+if [[ -z $format ]]; then
+	echo "What format?"
+	read format;
+fi;
 
 [[ -z "$format" ]] && echo "Empty Format!" && exit 1
 
