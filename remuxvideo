@@ -24,7 +24,7 @@ do
                     done)
         else
         echo -e "${RED}ERROR${NC}   Invalid input for recurse" && echo "Input either a number for recursion level or i for infinite recursion (DANGEROUS!)" && exit 1
-		fi;
+		fi;;
     ?)  printf "incorrect usage, use -h for help"; exit;;
     esac
 done
