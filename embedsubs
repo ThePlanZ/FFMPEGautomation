@@ -18,8 +18,8 @@ do
     D)  rmvid=1;;
     d)  rmsub=1;;
     r)  recurse=1;;
-    h)  printf "Usage \n    h= Display this\n    D= removes the original video once finished\n    d= removes the original subtitle file once finished"; exit;;
-    ?)  printf "incorrect usage, use -h for help" && exit;;
+    h)  printf "Usage \n    h= Display this\n    D= removes the original video once finished\n    d= removes the original subtitle file once finished\n   r= Recursive logic (variable)"; exit;;
+    ?)  printf "incorrect usage, use -h for help"; exit;;
     esac
 done
 
