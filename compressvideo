@@ -15,9 +15,9 @@ while getopts Dhr flag
 do
     case $flag in
     D)  destructive=1;;
-    h)  printf "Usage \n    h= Display this\n    D= destructive (removes the original file)\n   r= recursive"; exit;;
+    h)  printf "Usage \n    h= Display this\n    D= destructive (removes the original file)\n   r= Recursive logic (variable); exit;;
     r)  recurse=1;;
-    ?)  printf "incorrect usage, use -h for help" && exit;;
+    ?)  printf "incorrect usage, use -h for help"; exit;;
     esac
 done
 
