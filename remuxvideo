@@ -59,7 +59,9 @@ for i in $recurse*."$from"; do
     echo -e
     echo -e "${CYAN}$i${NC}"
     echo -e
-    if ffmpeg -i "$i" -loglevel warning -stats -codec copy "${i%.*}."$to""; then
+    if [[ "${i##*.}" = "$to" ]]; then
+        echo -e "${PURPLE}Format already matches wanted format. skipping...${NC}"
+    elif ffmpeg -i "$i" -loglevel warning -stats -codec copy "${i%.*}."$to""; then
             echo -e "${GREEN}Success!${NC}"
 	    if [ $destructive -eq 1 ]; then
             rm -f "$i"
