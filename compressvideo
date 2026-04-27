@@ -15,7 +15,7 @@ while getopts Dhr:f:R: flag
 do
     case $flag in
     D)  destructive=1;;
-    h)  printf "Usage \n    h= Display this\n    D= destructive (removes the original file)\n   r= Recursive logic (variable)\n	  f= input format\n	R= target resolution; exit;;
+    h)  printf "Usage \n    h= Display this\n    D= destructive (removes the original file)\n   r= Recursive logic (variable)\n	  f= input format\n	R= target resolution"; exit;;
     r)  if [ $OPTARG = "i" ] ; then
             recurse=**/
         elif [[ $OPTARG =~ ^[0-9]+$ ]]; then
