@@ -1,8 +1,8 @@
 #!/bin/bash
 destructive=0
 recurse=
-input=
-output=
+to=
+from=
 
 shopt -s globstar
 shopt -s nullglob
@@ -17,7 +17,7 @@ while getopts Dhr:i:o: flag
 do
     case $flag in
     D)  destructive=1;;
-    h)  printf "Usage \n    h= Display this\n    D= destructive (removes the original file)\n   r= Recursive logic (variable)"; exit;;
+    h)  printf "Usage \n    h= Display this\n    D= destructive (removes the original file)\n    r= Recursive logic (variable)\n	i= input fomrat\n	o= output format"; exit;;
     r)  if [ $OPTARG = "i" ] ; then
             recurse=**/
         elif [[ $OPTARG =~ ^[0-9]+$ ]]; then
@@ -27,24 +27,24 @@ do
         else
         echo -e "${RED}ERROR${NC}   Invalid input for recurse" && echo "Input either a number for recursion level or i for infinite recursion (DANGEROUS!)" && exit 1
 		fi;;
-	i) from=$OPTARG
-	o) to=$OPTARG
+	i)  from=$OPTARG;;
+	o)  to=$OPTARG;;
     ?)  printf "incorrect usage, use -h for help"; exit;;
     esac
 done
 
-if [[ -z $from ]]; do
+if [[ -z $from ]]; then
 	echo -e From...
 	read from;
 fi;
 
 [[ -z "$from" ]] && echo -e "ERROR - Empty request" && exit 1
 
-if [[ -z $to ]]; do
+if [[ -z $to ]]; then
 	echo -e
 	echo -e To...
 	read to;
-done
+fi;
 
 [[ -z "$to" ]] && echo -e "ERROR - Empty request" && exit 1
 
