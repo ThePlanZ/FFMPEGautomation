@@ -12,7 +12,7 @@ CYAN='\033[0;36m'
 PURPLE='\033[0;35m'
 NC='\033[0m'
 
-while getopts Dhr: flag
+while getopts Dhr:f: flag
 do
     case $flag in
     D)  destructive=1;;
@@ -24,14 +24,17 @@ do
                         printf '%s' "*/"
                     done)
         else
-        echo -e "${RED}ERROR${NC}   Invalid input for recurse" && echo "Input either a number for recursion level or i for infinite recursion (DANGEROUS!)" && exit 1
+        echo -e "${RED}ERROR${NC}   Invalid input for recurse" && echo "Input either a number for recursion level or i for infinite recursion (DANGEROUS!)\n	f= input format" && exit 1
 		fi;;
+	f)  format=$OPTARG
     ?)  printf "incorrect usage, use -h for help"; exit;;
     esac
 done
 
-echo "What format?"
-read format
+if [[ -z $format ]]; then
+	echo "What format?"
+	read format;
+fi;
 
 [[ -z "$format" ]] && echo "Empty Format!" && exit 1
 

@@ -11,11 +11,11 @@ CYAN='\033[0;36m'
 PURPLE='\033[0;35m'
 NC='\033[0m'
 
-while getopts Dhr: flag
+while getopts Dhr:f:R: flag
 do
     case $flag in
     D)  destructive=1;;
-    h)  printf "Usage \n    h= Display this\n    D= destructive (removes the original file)\n   r= Recursive logic (variable); exit;;
+    h)  printf "Usage \n    h= Display this\n    D= destructive (removes the original file)\n   r= Recursive logic (variable)\n	  f= input format\n	R= target resolution; exit;;
     r)  if [ $OPTARG = "i" ] ; then
             recurse=**/
         elif [[ $OPTARG =~ ^[0-9]+$ ]]; then
@@ -25,15 +25,22 @@ do
         else
         echo -e "${RED}ERROR${NC}   Invalid input for recurse" && echo "Input either a number for recursion level or i for infinite recursion (DANGEROUS!)" && exit 1
 		fi;;
+	f)  format=$OPTARG;;
+	R)  res=$OPTARG;;
     ?)  printf "incorrect usage, use -h for help"; exit;;
     esac
 done
 
-echo "What format?"
-read format
+if [[ -z $format ]]; then
+	echo "What format?"
+	read format;
+fi;
 
-echo "What quality? Input a resolution or use an abreviation such as \"hd720\""
-read res
+if [[ -z $res ]]; then
+	echo "What quality? Input a resolution or use an abreviation such as \"hd720\""
+	read res;
+fi;
+
 
 [[ -z "$format" || -z "$res" ]] && echo "Empty Request!" && exit 1
 
