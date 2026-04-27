@@ -1,6 +1,8 @@
 #!/bin/bash
 destructive=0
 recurse=
+input=
+output=
 
 shopt -s globstar
 shopt -s nullglob
@@ -11,7 +13,7 @@ CYAN='\033[0;36m'
 PURPLE='\033[0;35m'
 NC='\033[0m'
 
-while getopts Dhr: flag
+while getopts Dhr:i:o: flag
 do
     case $flag in
     D)  destructive=1;;
@@ -25,22 +27,30 @@ do
         else
         echo -e "${RED}ERROR${NC}   Invalid input for recurse" && echo "Input either a number for recursion level or i for infinite recursion (DANGEROUS!)" && exit 1
 		fi;;
+	i) from=$OPTARG
+	o) to=$OPTARG
     ?)  printf "incorrect usage, use -h for help"; exit;;
     esac
 done
 
-echo -e From...
-read from
+if [[ -z $from ]]; do
+	echo -e From...
+	read from;
+fi;
 
-echo -e
-echo -e To...
-read to
+[[ -z "$from" ]] && echo -e "ERROR - Empty request" && exit 1
+
+if [[ -z $to ]]; do
+	echo -e
+	echo -e To...
+	read to;
+done
+
+[[ -z "$to" ]] && echo -e "ERROR - Empty request" && exit 1
 
 echo
 echo "$recurse"
 echo
-
-[[ -z "$from" || -z "$to" ]] && echo -e "ERROR - Empty requests" && exit 1
 
 for i in $recurse*."$from"; do
     echo -e
