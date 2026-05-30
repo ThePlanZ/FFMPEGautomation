@@ -2,6 +2,7 @@
 rmsub=0
 rmvid=0
 recurse=
+manconf=
 
 shopt -s globstar
 shopt -s nullglob
@@ -12,7 +13,7 @@ CYAN='\033[0;36m'
 PURPLE='\033[0;35m'
 NC='\033[0m'
 
-while getopts Ddr:hf: flag
+while getopts Ddr:hf:c flag
 do
     case $flag in
     D)  rmvid=1;;
@@ -26,8 +27,15 @@ do
         else
         echo -e "${RED}ERROR${NC}   Invalid input for recurse" && echo "Input either a number for recursion level or i for infinite recursion (DANGEROUS!)" && exit 1
 		fi;;
-    h)  printf "Usage \n    h= Display this\n    D= removes the original video once finished\n    d= removes the original subtitle file once finished\n   r= Recursive logic (variable)\n	f= input fomrat"; exit;;
+    h)  printf "Usage:
+    -h  Display this
+    -D  Removes the original video file after embedding
+    -d  Removes the original subtitle file after embedding
+    -r  Recursion depth (number for depth, i for infinite — DANGEROUS)
+    -f  Input video format (e.g. mp4)
+    -c  Manual confirmation mode (prompt before each file)"; exit;;
 	f)  format=$OPTARG;;
+	c)  manconf=1;;
     ?)  printf "incorrect usage, use -h for help"; exit;;
     esac
 done
@@ -41,19 +49,23 @@ fi;
 
 for i in $recurse*."$format"; do
     echo -e
-    echo -e
     echo -e "${CYAN}$i${NC}"
-    echo -e
-    if ffmpeg -i "$i" -f srt -i "${i%.*}.srt" -loglevel warning -stats -map 0 -map 1 -c:v copy -c:a copy -c:s mov_text "${i%.*}SUB."$format""; then
+    wants=y
+    if [[ $manconf -eq 1 ]]; then
+        read -r -n 1 -t 8 -p "Remux ${i} [Y/N]?" wants
+    fi;
+    if [[ $wants = [Yy] ]]; then
+        if ffmpeg -i "$i" -f srt -i "${i%.*}.srt" -loglevel warning -stats -map 0 -map 1 -c:v copy -c:a copy -c:s mov_text "${i%.*}SUB.${format}"; then
             echo -e "${GREEN}Success!${NC}"
-	    if [ $rmvid -eq 1 ]; then
-            rm -f "$i"
+            if [ $rmvid -eq 1 ]; then
+                rm -f "$i"
+            fi;
+            if [ $rmsub -eq 1 ]; then
+                rm -f "${i%.*}.srt"
+            fi;
+        else
+            echo -e "${RED}Error${NC}"
         fi;
-        if [ $rmsub -eq 1 ]; then
-            rm -f "${i%.*}.srt"
-        fi;
-    else
-        echo -e "${RED}Error${NC}"
     fi;
 done
 
