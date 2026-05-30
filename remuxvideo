@@ -3,6 +3,88 @@ destructive=0
 recurse=
 to=
 from=
+manconf=
+
+shopt -s globstar
+shopt -s nullglob
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+PURPLE='\033[0;35m'
+NC='\033[0m'
+
+while getopts Dhr:i:o:c flag
+do
+    case $flag in
+    D)  destructive=1;;
+    h)  printf "Usage:
+    -h  Display this
+    -D  Destructive mode (removes the original file after remuxing)
+    -r  Recursion depth (number for depth, i for infinite — DANGEROUS)
+    -i  Input format  (e.g. mp4)
+    -o  Output format (e.g. mkv)
+    -c  Manual confirmation mode"; exit;;
+    r)  if [ $OPTARG = "i" ] ; then
+            recurse=**/
+        elif [[ $OPTARG =~ ^[0-9]+$ ]]; then
+            recurse=$(for i in $(seq $OPTARG); do
+                        printf '%s' "*/"
+                    done)
+        else
+        echo -e "${RED}ERROR${NC}   Invalid input for recurse" && echo "Input either a number for recursion level or i for infinite recursion (DANGEROUS!)" && exit 1
+		fi;;
+	i)  from=$OPTARG;;
+	o)  to=$OPTARG;;
+	c)  manconf=1;;
+    ?)  printf "incorrect usage, use -h for help"; exit;;
+    esac
+done
+
+if [[ -z $from ]]; then
+	echo -e From...
+	read from;
+fi;
+
+[[ $from =~ [[:space:]] ]] && echo -e "Space in input file format!!" && exit 1
+
+[[ -z "$from" ]] && echo -e "ERROR - Empty request" && exit 1
+
+if [[ -z $to ]]; then
+	echo -e
+	echo -e To...
+	read to;
+fi;
+
+[[ $to =~ [[:space:]] ]] && echo -e "Space in output file format!!" && exit 1
+
+[[ -z "$to" ]] && echo -e "ERROR - Empty request" && exit 1
+[[ $from == $to ]] && echo -e "Formats are the same. Exiting..." && exit 1
+
+for i in $recurse*."$from"; do
+    echo -e
+    echo -e "${CYAN}$i${NC}"
+    wants=y
+    if [[ $manconf -eq 1 ]]; then
+        read -r -n 1 -t 8 -p "Remux ${i} [Y/N]?" wants
+    fi;
+    if [[ $wants = [Yy] ]]; then
+        if ffmpeg -i "$i" -loglevel warning -stats -codec copy "${i%.*}.$to"; then
+            echo -e "${GREEN}Success!${NC}"
+            if [ $destructive -eq 1 ]; then
+                rm -f "$i"
+            fi;
+        else
+        echo -e "${RED}Generic Script Error${NC}"
+        fi;
+    fi;
+done
+
+#!/bin/bash
+destructive=0
+recurse=
+to=
+from=
 
 shopt -s globstar
 shopt -s nullglob
